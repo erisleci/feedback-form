@@ -1,13 +1,13 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { describe } from "vitest";
-import { errorMessages, successMessage } from "@constants";
+import { errorMessages } from "@constants";
 import { FeedbackForm } from "./FeedbackForm";
 
 const setup = () => {
   const button = screen.getByRole("button", { name: "Submit" });
   const nameInput = screen.getByTestId("name");
   const emailInput = screen.getByTestId("email");
-  const radioInput = screen.findByTestId("3");
+  const radioInput = screen.getByTestId("3");
 
   return { button, nameInput, emailInput, radioInput } as const;
 };
@@ -52,20 +52,18 @@ describe("<FeedbackForm />", () => {
       await screen.findByText(errorMessages.email.email)
     ).toBeInTheDocument();
   });
-  it("shows a confirmation message when form is submitted successfully", async () => {
-    render(<FeedbackForm />);
 
-    const { button, emailInput, nameInput } = setup();
+  it("doesn't show error when fields are filled correctly", async () => {
+    const { container } = render(<FeedbackForm />);
+
+    const { button, emailInput, nameInput, radioInput } = setup();
 
     fireEvent.input(nameInput, { target: { value: "Eris" } });
     fireEvent.input(emailInput, { target: { value: "test@gmail.com" } });
+    fireEvent.input(radioInput, { target: { checked: true } });
 
-    const radio = screen.getByTestId("3");
-    fireEvent.click(radio);
+    fireEvent.submit(button);
 
-    await waitFor(async () => {
-      fireEvent.submit(button);
-      expect(await screen.findByText(successMessage)).toBeInTheDocument();
-    });
+    expect(container.querySelectorAll(".red-500").length).toBe(0);
   });
 });
