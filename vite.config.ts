@@ -9,11 +9,17 @@ export default defineConfig({
   resolve: {
     alias: {
       "@components": path.resolve(__dirname, "./src/components"),
+      "@constants": path.resolve(__dirname, "./src/constants"),
     },
   },
   test: {
     globals: true,
     environment: "happy-dom",
     setupFiles: ["./src/setupTest.ts"],
+  },
+  server: {
+    proxy: {
+      "/api": "http://localhost:3001",
+    },
   },
 });
