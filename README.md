@@ -22,5 +22,4 @@ Form submissions will be saved at server/submissions.json
 
 ```sh
 $ yarn test
-``
 ```
